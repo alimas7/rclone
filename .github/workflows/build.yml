@@ -161,6 +161,16 @@ jobs:
           make compile_all
         if: matrix.compile_all
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rclone-${{ matrix.job_name }}
+          path: |
+            rclone
+            rclone.exe
+            build/
+          if-no-files-found: ignore
+
       - name: Deploy built binaries
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then make release_dep_linux ; fi
