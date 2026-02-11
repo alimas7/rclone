@@ -43,6 +43,7 @@ jobs:
             librclonetest: true
             deploy: true
 
+        exclude:
           - job_name: windows
             os: windows-latest
             go: '>=1.25.0-rc.1'
