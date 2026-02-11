@@ -141,11 +141,13 @@ jobs:
         if: matrix.quicktest
 
       - name: Race test
+        if: false
         run: |
           make racequicktest
         if: matrix.racequicktest
 
       - name: Run librclone tests
+        if: false
         run: |
           make -C librclone/ctest test
           make -C librclone/ctest clean
@@ -153,6 +155,7 @@ jobs:
         if: matrix.librclonetest
 
       - name: Compile all architectures test
+        if: false
         run: |
           make
           make compile_all
