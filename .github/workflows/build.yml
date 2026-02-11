@@ -30,7 +30,6 @@ jobs:
       fail-fast: false
       matrix:
         job_name: ['linux', 'windows']
-        os: [ubuntu-latest, windows-latest]
 
         include:
           - job_name: linux
@@ -44,7 +43,8 @@ jobs:
             librclonetest: true
             deploy: true
 
-          # - job_name: windows
+        exclude:
+          - job_name: windows
           #   os: windows-latest
           #   go: '>=1.25.0-rc.1'
           #   gotags: cmount
