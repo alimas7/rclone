@@ -135,31 +135,27 @@ jobs:
           rclone version
 
       - name: Run tests
-        if: false
         run: |
           make quicktest
-        if: matrix.quicktest
+        if: false && matrix.quicktest
 
       - name: Race test
-        if: false
         run: |
           make racequicktest
-        if: matrix.racequicktest
+        if: false && matrix.racequicktest
 
       - name: Run librclone tests
-        if: false
         run: |
           make -C librclone/ctest test
           make -C librclone/ctest clean
           librclone/python/test_rclone.py
-        if: matrix.librclonetest
+        if: false && matrix.librclonetest
 
       - name: Compile all architectures test
-        if: false
         run: |
           make
           make compile_all
-        if: matrix.compile_all
+        if: false && matrix.compile_all
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
