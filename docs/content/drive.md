@@ -265,7 +265,7 @@ account key" button.
   `https://www.googleapis.com/auth/drive`
   to grant read/write access to Google Drive specifically.
   You can also use `https://www.googleapis.com/auth/drive.readonly` for read
-  only access.
+  only access with `--drive-scope=drive.readonly`.
 - Click "Authorise"
 
 ##### 3. Configure rclone, assuming a new install
@@ -1419,6 +1419,23 @@ Properties:
     - If writing fails log errors only, don't fail the transfer
   - "read,write"
     - Read and Write the value.
+
+#### --drive-metadata-enforce-expansive-access
+
+Whether the request should enforce expansive access rules.
+
+From Feb 2026 this flag will be set by default so this flag can be used for
+testing before then.
+
+See: https://developers.google.com/workspace/drive/api/guides/limited-expansive-access
+
+
+Properties:
+
+- Config:      metadata_enforce_expansive_access
+- Env Var:     RCLONE_DRIVE_METADATA_ENFORCE_EXPANSIVE_ACCESS
+- Type:        bool
+- Default:     false
 
 #### --drive-encoding
 
