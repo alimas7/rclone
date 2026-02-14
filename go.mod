@@ -1,4 +1,4 @@
-module github.com/alimas7/rclone
+module github.com/rclone/rclone
 
 go 1.24.4
 
