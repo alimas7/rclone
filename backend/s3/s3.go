@@ -1664,6 +1664,10 @@ func NewFs(ctx context.Context, name, root string, m configmap.Mapper) (fs.Fs, e
 		// MD5 digest of their object data.
 		f.etagIsNotMD5 = true
 	}
+	if provider.Quirks.EtagIsNotMD5 != nil && *provider.Quirks.EtagIsNotMD5 {
+		// Provider always returns ETags that are not MD5 (e.g., mandatory encryption)
+		f.etagIsNotMD5 = true
+	}
 	if opt.DirectoryBucket {
 		// Objects uploaded to directory buckets appear to have random ETags
 		//
@@ -1687,6 +1691,9 @@ func NewFs(ctx context.Context, name, root string, m configmap.Mapper) (fs.Fs, e
 	}).Fill(ctx, f)
 	if opt.Provider == "AWS" {
 		f.features.DoubleSlash = true
+	}
+	if opt.Provider == "Fastly" {
+		f.features.Copy = nil
 	}
 	if opt.Provider == "Rabata" {
 		f.features.Copy = nil
@@ -2928,7 +2935,9 @@ func (f *Fs) Copy(ctx context.Context, src fs.Object, remote string) (fs.Object,
 	req := s3.CopyObjectInput{
 		MetadataDirective: types.MetadataDirectiveCopy,
 	}
-
+	if srcObj.storageClass != nil {
+		req.StorageClass = types.StorageClass(*srcObj.storageClass)
+	}
 	// Build upload options including headers and metadata
 	ci := fs.GetConfig(ctx)
 	uploadOptions := fs.MetadataAsOpenOptions(ctx)
@@ -4501,7 +4510,12 @@ func (o *Object) prepareUpload(ctx context.Context, src fs.ObjectInfo, options [
 		ACL:    types.ObjectCannedACL(o.fs.opt.ACL),
 		Key:    &bucketPath,
 	}
-
+	if tierObj, ok := src.(fs.GetTierer); ok {
+		tier := tierObj.GetTier()
+		if tier != "" {
+			ui.req.StorageClass = types.StorageClass(strings.ToUpper(tier))
+		}
+	}
 	// Fetch metadata if --metadata is in use
 	meta, err := fs.GetMetadataOptions(ctx, o.fs, src, options)
 	if err != nil {
